@@ -4,7 +4,7 @@ An example of a 3D Pong game written with Babylon.JS, TypeScript, and Vite
 
 ## How to Play
 
-Visit [pong3d](https://corysia.github.io/pong3d) to start the game.
+Visit [pong](https://corysia.github.io/pong) to start the game.
 
 ### Controls
 
