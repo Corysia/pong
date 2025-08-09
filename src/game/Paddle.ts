@@ -29,9 +29,9 @@ import { SETTINGS, clamp } from "./Settings";
 export class Paddle {
     readonly mesh: Mesh;
 
-    constructor(scene: Scene, x: number) {
+    constructor(scene: Scene, x: number, color: Color3 = Color3.White()) {
         const mat = new StandardMaterial("paddleMat", scene);
-        mat.diffuseColor = new Color3(0.9, 0.9, 0.95);
+        mat.diffuseColor = color;
         mat.emissiveColor = new Color3(0.2, 0.2, 0.25);
 
         this.mesh = MeshBuilder.CreateBox("paddle", {

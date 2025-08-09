@@ -3,7 +3,7 @@ import { Scene } from "@babylonjs/core/scene";
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
 import { HemisphericLight } from "@babylonjs/core/Lights/hemisphericLight";
 import { DirectionalLight } from "@babylonjs/core/Lights/directionalLight";
-import { Vector3 } from "@babylonjs/core/Maths/math";
+import { Color3, Vector3 } from "@babylonjs/core/Maths/math";
 
 import { Arena } from "./Arena";
 import { Paddle } from "./Paddle";
@@ -76,8 +76,8 @@ export class Game {
         // Paddles at edges
         const px = this.arena.bounds.left + SETTINGS.wallPadding;
         const ax = this.arena.bounds.right - SETTINGS.wallPadding;
-        this.leftPaddle = new Paddle(this.scene, px);
-        this.rightPaddle = new Paddle(this.scene, ax);
+        this.leftPaddle = new Paddle(this.scene, px, Color3.Green());
+        this.rightPaddle = new Paddle(this.scene, ax, Color3.Red());
 
         // Ball
         this.ball = new Ball(this.scene);
