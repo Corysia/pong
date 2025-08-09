@@ -2,6 +2,8 @@
 
 An example of a 3D Pong game written with Babylon.JS, TypeScript, and Vite
 
+![Screenshot](./public/pong.png)
+
 ## Table of Contents
 
 - [Pong](#pong)
