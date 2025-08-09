@@ -8,8 +8,6 @@ Visit [pong](https://corysia.github.io/pong) to start the game.
 
 ### Controls
 
-W - Move paddle up
-S - Move paddle down
-Spacebar - start the game
-
-
+- W - Move paddle up
+- S - Move paddle down
+- Spacebar - start the game

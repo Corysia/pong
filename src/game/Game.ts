@@ -34,22 +34,22 @@ import { SETTINGS, clamp, radians } from "./Settings";
  * ```
  */
 export class Game {
-    private engine: Engine;
-    private scene: Scene;
+    private readonly engine: Engine;
+    private readonly scene: Scene;
 
-    private arena: Arena;
-    private leftPaddle: Paddle;
-    private rightPaddle: Paddle;
-    private ball: Ball;
+    private readonly arena: Arena;
+    private readonly leftPaddle: Paddle;
+    private readonly rightPaddle: Paddle;
+    private readonly ball: Ball;
 
-    private ui: UIManager;
-    private input: InputManager;
+    private readonly ui: UIManager;
+    private readonly input: InputManager;
 
     private paused = true;
     private playerScore = 0;
     private aiScore = 0;
 
-    private canvas: HTMLCanvasElement;
+    private readonly canvas: HTMLCanvasElement;
 
     /**
      * Initializes the game instance with the provided HTML canvas element.
@@ -254,7 +254,7 @@ export class Game {
      *   - Handles collisions between paddles and the ball.
      *   - Checks for scoring events and updates scores accordingly.
      */
-    private tick = () => {
+    private readonly tick = () => {
         const dt = this.engine.getDeltaTime() / 1000;
 
         this.serveIfRequested();

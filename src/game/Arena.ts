@@ -84,7 +84,7 @@ export class Arena {
         topWall.material = wallMat;
         topWall.position.set(0, SETTINGS.world.tableThickness + 0.3, this.bounds.front + wallThickness / 2);
 
-        const bottomWall = topWall.clone("bottomWall")!;
+        const bottomWall = topWall.clone("bottomWall");
         bottomWall.position.set(0, SETTINGS.world.tableThickness + 0.3, this.bounds.back - wallThickness / 2);
     }
 }
