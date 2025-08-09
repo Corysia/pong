@@ -65,6 +65,7 @@ export class UIManager {
      */
     setCenterMessage(msg: string) {
         this.centerText.text = msg;
+        this.centerText.color = "#FFA000";
     }
 
     /**

@@ -69,7 +69,7 @@ export class Game {
         this.input = new InputManager();
         this.ui = new UIManager();
         this.ui.setScore(this.playerScore, this.aiScore);
-        this.ui.setCenterMessage("Press Space to serve");
+        this.ui.setCenterMessage("Press Space to serve\n\n\nW - Up\nS - Down");
 
         this.arena = new Arena(this.scene);
 
