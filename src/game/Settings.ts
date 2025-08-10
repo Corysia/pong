@@ -53,6 +53,11 @@ export const SETTINGS = {
         trackOnlyWhenIncoming: true,
         returnToCenterSpeed: 10
     },
+    game: {
+        maxScore: 11,
+        deuce: 10,
+        skunk: 6
+    },
     wallPadding: 2.0,
     uiFontSize: 32
 } as const;
@@ -60,3 +65,10 @@ export const SETTINGS = {
 export const DEGREES_TO_RADIANS = Math.PI / 180;
 export const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
 export const radians = (deg: number) => deg * DEGREES_TO_RADIANS;
+
+export enum WinCondition {
+    Player = 0,
+    AI = 1,
+    Continue = 2,
+    Deuce = 3
+}
