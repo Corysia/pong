@@ -1,3 +1,4 @@
+import { AudioManager } from "./Audio";
 import { Engine } from "@babylonjs/core/Engines/engine";
 import { Scene } from "@babylonjs/core/scene";
 import { ArcRotateCamera } from "@babylonjs/core/Cameras/arcRotateCamera";
@@ -34,6 +35,7 @@ import { SETTINGS, clamp, radians } from "./Settings";
  * ```
  */
 export class Game {
+    private readonly audio: AudioManager;
     private readonly engine: Engine;
     private readonly scene: Scene;
 
@@ -62,6 +64,7 @@ export class Game {
         this.canvas = canvas;
         this.engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: false });
         this.scene = new Scene(this.engine);
+        this.audio = new AudioManager();
 
         this.setupCamera();
         this.setupLights();
@@ -131,48 +134,49 @@ export class Game {
         dir.intensity = 0.3;
     }
 
+
     /**
-     * Checks if the game is currently paused and if the serve action has been requested by the user.
-     * If both conditions are met, serves the ball to start or resume gameplay, unpauses the game,
-     * and clears any center message displayed on the UI.
+     * Checks if the user has pressed the serve key (space by default) while the game is paused.
+     * If so, serves the ball, unpauses the game, and clears the center message.
+     * This also unlocks the audio manager, allowing sounds to play.
+     *
+     * @private
      */
     private serveIfRequested() {
         if (this.paused && this.input.consumeServePressed()) {
+            this.audio.unlock();   // <— unlock on first user gesture
             this.ball.serve();
             this.paused = false;
             this.ui.clearCenterMessage();
         }
     }
 
+
     /**
-     * Checks for collisions between the ball and both paddles, and handles the ball's response.
+     * Checks for collisions between the ball and both paddles.
+     * If a collision is detected, adjusts the ball's velocity to bounce it off the paddle.
+     * Plays a sound effect when a paddle is hit.
      *
-     * - If the ball is moving towards the left paddle and collides, calculates the impact position,
-     *   determines the bounce angle, nudges the ball out of the paddle, and deflects its velocity.
-     * - If the ball is moving towards the right paddle and collides, performs the same logic for the right paddle.
-     *
-     * The bounce angle is determined by where the ball hits the paddle, allowing for angled deflections.
-     * The ball's position is adjusted to prevent it from getting stuck inside the paddle.
-     *
-     * Assumes existence of `circleRectCollideXZ`, `clamp`, and `radians` utility functions.
+     * @private
      */
     private handlePaddleCollisions() {
         const r = SETTINGS.ball.radius;
 
-        // Left paddle if ball moving left
+        // Left paddle
         if (this.ball.vx < 0 && circleRectCollideXZ(
             this.ball.x, this.ball.z, r,
             this.leftPaddle.x, this.leftPaddle.z,
             SETTINGS.paddle.widthX, SETTINGS.paddle.lengthZ
         )) {
             const halfLen = SETTINGS.paddle.lengthZ / 2;
-            const impact = (this.ball.z - this.leftPaddle.z) / halfLen; // -1..1
+            const impact = (this.ball.z - this.leftPaddle.z) / halfLen;
             const angle = clamp(impact, -1, 1) * radians(SETTINGS.ball.bounceAngleMaxDeg);
-            this.ball.x = this.leftPaddle.x + (SETTINGS.paddle.widthX / 2 + r + 0.01); // nudge out
+            this.ball.x = this.leftPaddle.x + (SETTINGS.paddle.widthX / 2 + r + 0.01);
             this.ball.speedUpAndDeflect(+1, angle);
+            this.audio.playGreenPaddle();     // <— play on paddle hit
         }
 
-        // Right paddle if ball moving right
+        // Right paddle
         if (this.ball.vx > 0 && circleRectCollideXZ(
             this.ball.x, this.ball.z, r,
             this.rightPaddle.x, this.rightPaddle.z,
@@ -183,13 +187,14 @@ export class Game {
             const angle = clamp(impact, -1, 1) * radians(SETTINGS.ball.bounceAngleMaxDeg);
             this.ball.x = this.rightPaddle.x - (SETTINGS.paddle.widthX / 2 + r + 0.01);
             this.ball.speedUpAndDeflect(-1, angle);
+            this.audio.playRedPaddle();     // <— play on paddle hit
         }
     }
 
     /**
-     * Checks if the ball has crossed the left or right boundaries of the arena,
-     * indicating a score for either the player or the AI. Increments the appropriate
-     * score and resets the point with a message prompting the user to serve.
+     * Checks if the ball has crossed either side of the court.
+     * If so, increments the corresponding score and resets the game to a serving state.
+     * Plays a sound effect when a point is scored.
      *
      * @private
      */
@@ -200,9 +205,11 @@ export class Game {
         if (this.ball.x - r > b.right) {
             this.playerScore++;
             this.resetPoint("Point! Press Space to serve");
+            this.audio.playPlayerScore();     // <— play on point scored
         } else if (this.ball.x + r < b.left) {
             this.aiScore++;
             this.resetPoint("Point! Press Space to serve");
+            this.audio.playAIScore();     // <— play on point scored
         }
     }
 
@@ -253,6 +260,7 @@ export class Game {
      *   - Updates the ball's position and checks for boundary collisions.
      *   - Handles collisions between paddles and the ball.
      *   - Checks for scoring events and updates scores accordingly.
+     *   - Plays wall bounce sound effect.
      */
     private readonly tick = () => {
         const dt = this.engine.getDeltaTime() / 1000;
@@ -274,6 +282,10 @@ export class Game {
 
             // Scoring
             this.handleScoring();
+        }
+        const wallBounce = this.ball.update(dt, this.arena.bounds);
+        if (wallBounce) {
+            this.audio.playWall();        // <— play on wall bounce
         }
     };
 

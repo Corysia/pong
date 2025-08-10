@@ -85,14 +85,15 @@ export class Ball {
     }
 
     /**
-     * Updates the ball's position based on its velocity and the elapsed time.
-     * Handles bouncing off the front and back Z-walls by reversing the Z velocity
-     * and repositioning the ball to prevent it from passing through the wall.
+     * Updates the ball's position and handles wall collisions.
      *
-     * @param dt - The time delta since the last update, in seconds.
-     * @param bounds - The boundaries of the play area, containing front and back Z limits.
+     * @param dt - The time delta in seconds since the last update.
+     * @param bounds - The bounds of the game world, used to detect wall collisions.
+     * @returns `true` if the ball bounced off a wall during this update, and `false` otherwise.
      */
-    update(dt: number, bounds: Bounds) {
+    update(dt: number, bounds: Bounds): boolean {
+        let wallBounce = false;
+
         this.mesh.position.x += this.vx * dt;
         this.mesh.position.z += this.vz * dt;
         this.mesh.position.y = SETTINGS.ball.y;
@@ -103,10 +104,14 @@ export class Ball {
         if (this.mesh.position.z + r > bounds.front) {
             this.mesh.position.z = bounds.front - r;
             this.vz = -this.vz;
+            wallBounce = true;
         } else if (this.mesh.position.z - r < bounds.back) {
             this.mesh.position.z = bounds.back + r;
             this.vz = -this.vz;
+            wallBounce = true;
         }
+
+        return wallBounce;
     }
 
     /**

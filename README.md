@@ -12,6 +12,7 @@ An example of a 3D Pong game written with Babylon.JS, TypeScript, and Vite
     - [Controls](#controls)
   - [TODO](#todo)
   - [Credits](#credits)
+    - [Sounds](#sounds)
 
 ## How to Play
 
@@ -36,7 +37,6 @@ You may pan around the game board with the mouse.
 
 ## TODO
 
-- Add sounds
 - Add music
 - Add win conditions
   - Scoring:
@@ -51,3 +51,7 @@ You may pan around the game board with the mouse.
 - [Babylon.JS](https://www.babylonjs.com/)
 - [TypeScript](https://www.typescriptlang.org/)
 - [Vite](https://vitejs.dev/)
+
+### Sounds
+
+- [Audio by thirteenthfail](https://freesound.org/people/thirteenthfail/)
