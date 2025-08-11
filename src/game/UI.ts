@@ -55,7 +55,7 @@ export class UIManager {
      * @param ai - The current score of the AI opponent.
      */
     setScore(player: number, ai: number) {
-        this.scoreText.text = `You: ${player}    |    AI: ${ai}`;
+        this.scoreText.text = `\nYou: ${player}    |    AI: ${ai}`;
     }
 
     /**

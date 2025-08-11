@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "host": "vite --host",
     "build": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "clean": "rm -rf dist node_modules",
+    "test": "vitest"
   },
   "devDependencies": {
     "typescript": "~5.8.3",
@@ -14,6 +17,7 @@
   },
   "dependencies": {
     "@babylonjs/core": "^8.22.1",
-    "@babylonjs/gui": "^8.22.1"
+    "@babylonjs/gui": "^8.22.1",
+    "vitest": "^3.2.4"
   }
 }

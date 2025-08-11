@@ -13,6 +13,7 @@ import { UIManager } from "./UI";
 import { InputManager } from "./Input";
 import { circleRectCollideXZ } from "./collision";
 import { SETTINGS, clamp, radians } from "./Settings";
+import { WinCondition } from "./WinCondition";
 
 /**
  * Manages the core logic and rendering of the Pong game using BabylonJS.
@@ -48,6 +49,7 @@ export class Game {
     private readonly input: InputManager;
 
     private paused = true;
+    private gameOver = false;
     private playerScore = 0;
     private aiScore = 0;
 
@@ -60,9 +62,9 @@ export class Game {
      *
      * @param canvas - The HTMLCanvasElement to render the game on.
      */
-    constructor(canvas: HTMLCanvasElement) {
-        this.canvas = canvas;
-        this.engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: false });
+    constructor() {
+        this.canvas = Game.createCanvas();
+        this.engine = new Engine(this.canvas, true, { preserveDrawingBuffer: true, stencil: false });
         this.scene = new Scene(this.engine);
         this.audio = new AudioManager();
 
@@ -89,6 +91,16 @@ export class Game {
         this.scene.onBeforeRenderObservable.add(this.tick);
 
         window.addEventListener("resize", () => this.engine.resize());
+    }
+
+    private static createCanvas(): HTMLCanvasElement {
+        document.getElementById("canvas")?.remove();
+        const canvas = document.createElement("canvas");
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.id = "canvas";
+        document.body.appendChild(canvas);
+        return canvas;
     }
 
     /**
@@ -143,7 +155,7 @@ export class Game {
      * @private
      */
     private serveIfRequested() {
-        if (this.paused && this.input.consumeServePressed()) {
+        if (this.paused && !this.gameOver && this.input.consumeServePressed()) {
             this.audio.unlock();   // <— unlock on first user gesture
             this.ball.serve();
             this.paused = false;
@@ -201,15 +213,36 @@ export class Game {
     private handleScoring() {
         const r = SETTINGS.ball.radius;
         const b = this.arena.bounds;
+        let point = false;
 
         if (this.ball.x - r > b.right) {
             this.playerScore++;
-            this.resetPoint("Point! Press Space to serve");
-            this.audio.playPlayerScore();     // <— play on point scored
+            this.audio.playPlayerScore();    // <— play on point scored
+            point = true;
         } else if (this.ball.x + r < b.left) {
             this.aiScore++;
-            this.resetPoint("Point! Press Space to serve");
             this.audio.playAIScore();     // <— play on point scored
+            point = true;
+        }
+
+        if (point) {
+            const gameState = WinCondition.check(this.playerScore, this.aiScore);
+            switch (gameState) {
+                case WinCondition.Player:
+                    this.resetPoint("GAME OVER\n\n\nYou won!!");
+                    this.gameOver = true;
+                    break;
+                case WinCondition.AI:
+                    this.resetPoint("GAME OVER\n\n\nYou lost.");
+                    this.gameOver = true;
+                    break;
+                case WinCondition.Deuce:
+                    this.resetPoint("DEUCE! Press Space to serve");
+                    break;
+                default:
+                    this.resetPoint("Point! Press Space to serve");
+                    break;
+            }
         }
     }
 
@@ -267,6 +300,10 @@ export class Game {
 
         this.serveIfRequested();
 
+        if (this.gameOver) {
+            return;
+        }
+
         if (!this.paused) {
             // Player
             this.leftPaddle.updatePlayer(dt, this.input.up, this.input.down, this.arena.bounds);
@@ -297,3 +334,5 @@ export class Game {
         this.engine.runRenderLoop(() => this.scene.render());
     }
 }
+
+

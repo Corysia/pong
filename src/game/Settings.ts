@@ -53,6 +53,11 @@ export const SETTINGS = {
         trackOnlyWhenIncoming: true,
         returnToCenterSpeed: 10
     },
+    game: {
+        maxScore: 11,
+        deuce: 10,
+        skunk: 6
+    },
     wallPadding: 2.0,
     uiFontSize: 32
 } as const;
