@@ -1,12 +1,43 @@
-import { Game } from './Game';
-import { SETTINGS } from './Settings';
-import { WinCondition } from './Settings';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
+
+vi.mock('@babylonjs/core/Engines/engine', () => ({
+    Engine: class MockEngine {
+        constructor(canvas: HTMLCanvasElement, antialias?: boolean) { }
+        dispose() { }
+        getRenderWidth(): number { return 800; }
+        getRenderHeight(): number { return 600; }
+        runRenderLoop(_fn: () => void): void { }
+        stopRenderLoop(): void { }
+        getInputElement(): HTMLCanvasElement | undefined {
+            return undefined;
+        }
+        onBeginFrameObservable = { add: () => { } };
+        onEndFrameObservable = { add: () => { } };
+        // Babylon sometimes tries to push these observables
+    },
+}));
+
+vi.mock('@babylonjs/core/scene', () => ({
+    Scene: class MockScene {
+        activeCamera = null;
+        lights: any[] = [];
+        meshes: any[] = [];
+        _evaluateActiveMeshes() { }
+        _activeMeshes: any[] = [];
+        dispose() { }
+        render() { }
+    },
+}));
+
+
+import { Game } from '../src/game/Game';
+import { SETTINGS, WinCondition } from '../src/game/Settings';
 
 describe('Game.CheckWinner', () => {
     let game: Game;
 
     beforeEach(() => {
-        game = new Game(null); // Initialize game with null canvas
+        game = new Game();
     });
 
     it('should return Deuce when both scores are equal to deuce', () => {
