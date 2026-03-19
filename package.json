@@ -7,17 +7,21 @@
     "dev": "vite",
     "host": "vite --host",
     "build": "tsc && vite build",
+    "buildDbg": "VITE_DEBUG=true npm run build",
     "preview": "vite preview",
-    "clean": "rm -rf dist node_modules",
-    "test": "vitest"
-  },
-  "devDependencies": {
-    "typescript": "~5.8.3",
-    "vite": "^7.1.0"
+    "nuke": "rm -rf dist docs node_modules package-lock.json && npm cache clean --force",
+    "clean": "rm -rf dist docs node_modules package-lock.json && npm install",
+    "test": "vitest",
+    "docs": "typedoc --entryPointStrategy expand src",
+    "docs:serve": "typedoc --entryPointStrategy expand src && python -m http.server 8080 --directory docs"
   },
   "dependencies": {
-    "@babylonjs/core": "^8.22.1",
-    "@babylonjs/gui": "^8.22.1",
-    "vitest": "^3.2.4"
+    "@babylonjs/core": "^8.52.0",
+    "@babylonjs/inspector": "^8.52.0",
+    "terser": "^5.46.0",
+    "typedoc": "^0.28.17",
+    "typescript": "~5.7.2",
+    "vite": "^6.3.1",
+    "vitest": "^4.0.18"
   }
 }
