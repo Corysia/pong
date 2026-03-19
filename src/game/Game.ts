@@ -56,6 +56,23 @@ export class Game {
     private readonly canvas: HTMLCanvasElement;
 
     /**
+     * Detects if the current device is a mobile/touch device.
+     * Uses multiple checks to avoid false positives on desktop with touch support.
+     * 
+     * @returns {boolean} True if running on a mobile device, false otherwise.
+     */
+    private isMobileDevice(): boolean {
+        // Check for touch support
+        const hasTouch = 'ontouchstart' in globalThis || navigator.maxTouchPoints > 0;
+        
+        // Additional checks to avoid desktop with touch support
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isSmallScreen = globalThis.innerWidth <= 768 || globalThis.screen?.width <= 768;
+        
+        return hasTouch && (isMobile || isSmallScreen);
+    }
+
+    /**
      * Initializes the game instance with the provided HTML canvas element.
      * Sets up the BabylonJS engine, scene, camera, lights, input manager, UI manager, arena, paddles, and ball.
      * Also configures the render loop and window resize handling.
@@ -72,9 +89,15 @@ export class Game {
         this.setupLights();
 
         this.input = new InputManager();
+        this.input.enableServing(); // Enable serving initially
         this.ui = new UIManager();
         this.ui.setScore(this.playerScore, this.aiScore);
-        this.ui.setCenterMessage("Press Space to serve\n\n\nW - Up\nS - Down");
+        
+        // Show appropriate instructions based on device type
+        const instructions = this.isMobileDevice() 
+            ? "Tap right side to serve\n\n\nTap left side: ↑/↓ to move"
+            : "Press Space to serve\n\n\nW - Up\nS - Down";
+        this.ui.setCenterMessage(instructions);
 
         this.arena = new Arena(this.scene);
 
@@ -160,6 +183,7 @@ export class Game {
             this.ball.serve();
             this.paused = false;
             this.ui.clearCenterMessage();
+            this.input.disableServing(); // Disable serving during gameplay
         }
     }
 
@@ -227,6 +251,8 @@ export class Game {
 
         if (point) {
             const gameState = WinCondition.check(this.playerScore, this.aiScore);
+            const serveText = this.isMobileDevice() ? "Tap right side to serve" : "Press Space to serve";
+            
             switch (gameState) {
                 case WinCondition.Player:
                     this.resetPoint("GAME OVER\n\n\nYou won!!");
@@ -237,10 +263,10 @@ export class Game {
                     this.gameOver = true;
                     break;
                 case WinCondition.Deuce:
-                    this.resetPoint("DEUCE! Press Space to serve");
+                    this.resetPoint(`DEUCE! ${serveText}`);
                     break;
                 default:
-                    this.resetPoint("Point! Press Space to serve");
+                    this.resetPoint(`Point! ${serveText}`);
                     break;
             }
         }
@@ -255,6 +281,7 @@ export class Game {
      */
     private resetPoint(message: string) {
         this.paused = true;
+        this.input.enableServing(); // Enable serving when waiting to serve
         this.ball.resetPosition();
         this.leftPaddle.setZ(0);
         this.rightPaddle.setZ(0);
