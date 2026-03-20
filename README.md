@@ -8,6 +8,7 @@ An example of a 3D Pong game written with Babylon.JS, TypeScript, and Vite
 
 - [Pong](#pong)
   - [Table of Contents](#table-of-contents)
+  - [Architecture Documentation](#architecture-documentation)
   - [How to Play](#how-to-play)
     - [Scoring](#scoring)
     - [Controls](#controls)
@@ -15,6 +16,10 @@ An example of a 3D Pong game written with Babylon.JS, TypeScript, and Vite
       - [Camera](#camera)
   - [Credits](#credits)
     - [Sounds](#sounds)
+
+## Architecture Documentation
+
+For detailed architecture documentation, class diagrams, and system design, see [DESIGN.md](./DESIGN.md).
 
 ## How to Play
 
@@ -37,11 +42,19 @@ Visit [pong](https://corysia.github.io/pong) to start the game.
 
 `Red Paddle` - AI's paddle
 
+**Desktop Controls:**
+
 - W - Move paddle up
 - S - Move paddle down
 - Spacebar - start the game
 
+**Mobile Controls:**
 
+- **Left Side - Top Half** (Green Zone): Move paddle up
+- **Left Side - Bottom Half** (Red Zone): Move paddle down  
+- **Right Side** (Any Area): Tap to serve
+
+The game automatically detects mobile devices and displays touch controls with visual indicators.
 
 #### Camera
 
