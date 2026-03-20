@@ -18,11 +18,6 @@ export class InputManager {
     private servePressed = false;
     private canServe = false;
     
-    // Touch control zones
-    private touchUpZone: HTMLElement | null = null;
-    private touchDownZone: HTMLElement | null = null;
-    private serveZone: HTMLElement | null = null;
-    
     // Touch state tracking
     private readonly activeTouches = new Map<number, Touch>();
 
@@ -180,11 +175,6 @@ export class InputManager {
         touchContainer.appendChild(downZone);
         touchContainer.appendChild(serveZone);
         document.body.appendChild(touchContainer);
-
-        // Store references
-        this.touchUpZone = upZone;
-        this.touchDownZone = downZone;
-        this.serveZone = serveZone;
     }
 
     /**
