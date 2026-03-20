@@ -1,10 +1,28 @@
 import { SETTINGS } from "./Settings";
 
+/**
+ * Determines win conditions for the Pong game.
+ * Evaluates scores to determine if the game should continue, end in player victory,
+ * AI victory, or reach a deuce state.
+ *
+ * @remarks
+ * - Deuce occurs when both players reach the deuce score.
+ * - Skunk is a shutout victory when one player reaches skunk score with opponent at 0.
+ * - Normal victory requires reaching max score with at least 2-point lead.
+ * - During deuce, players must win by 2 points.
+ */
 export class WinCondition {
-    public static Deuce = 0;
-    public static Player = 1;
-    public static AI = 2;
-    public static Continue = 3;
+    /** Indicates the game is in deuce (tied at deuce score). */
+    public static readonly Deuce = 0;
+    
+    /** Indicates the player has won the game. */
+    public static readonly Player = 1;
+    
+    /** Indicates the AI has won the game. */
+    public static readonly AI = 2;
+    
+    /** Indicates the game should continue. */
+    public static readonly Continue = 3;
 
     /**
         * Determines the winner of the game based on the current scores.

@@ -8,7 +8,7 @@
             "name": "Launch Chrome",
             "request": "launch",
             "type": "chrome",
-            "url": "http://localhost:5173/kitchen-chaos/",
+            "url": "http://localhost:5173/pong/",
             "webRoot": "${workspaceFolder}"
         }
     ]

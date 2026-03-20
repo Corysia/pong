@@ -1,5 +1,21 @@
 import { CreateAudioEngineAsync, CreateSoundAsync, StaticSound } from "@babylonjs/core";
 
+/**
+ * Manages audio playback for the Pong game.
+ * Handles loading and playing sound effects for paddles, walls, and scoring events.
+ *
+ * @remarks
+ * - Audio engine must be unlocked before playing sounds (browser requirement).
+ * - All sound files are loaded asynchronously when unlocked.
+ * - Methods safely handle cases where audio is not yet unlocked.
+ *
+ * @example
+ * ```ts
+ * const audio = new AudioManager();
+ * await audio.unlock();
+ * audio.playGreenPaddle();
+ * ```
+ */
 export class AudioManager {
     private green_paddle?: StaticSound;
     private red_paddle?: StaticSound;
@@ -26,9 +42,28 @@ export class AudioManager {
         }
     }
 
+    /**
+     * Plays the sound effect for the green paddle being hit.
+     */
     playGreenPaddle() { this.green_paddle?.play(); }
+
+    /**
+     * Plays the sound effect for the red paddle being hit.
+     */
     playRedPaddle() { this.red_paddle?.play(); }
+
+    /**
+     * Plays the sound effect for the ball bouncing off a wall.
+     */
     playWall() { this.wall?.play(); }
+
+    /**
+     * Plays the sound effect when the player scores a point.
+     */
     playPlayerScore() { this.player_score?.play(); }
+
+    /**
+     * Plays the sound effect when the AI scores a point.
+     */
     playAIScore() { this.ai_score?.play(); }
 }
